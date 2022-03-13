@@ -17,7 +17,7 @@ open_action = 'w'
 backup_file = open(current_directory/filename,open_action)
 
 #Device information
-host = '192.168.49.254'
+host = '192.168.108.254'
 device = {'ip' : host,'username' : USERNAME, 'password' : PASSWORD, 'device_type' : 'cisco_ios'}
 
 #Connect to device
