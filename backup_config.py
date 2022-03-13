@@ -4,6 +4,7 @@
 #Import modules
 import datetime,pathlib,os,netmiko
 from netmiko import ConnectHandler
+from netmiko.ssh_exception import AuthenticationException,SSHException,NetMikoTimeoutException
 from getpass import getpass
 
 #Gather credentials
@@ -20,10 +21,17 @@ backup_file = open(current_directory/filename,open_action)
 host = '192.168.108.254'
 device = {'ip' : host,'username' : USERNAME, 'password' : PASSWORD, 'device_type' : 'cisco_ios'}
 
-#Connect to device
-device_connection = ConnectHandler(**device)
-output = device_connection.send_command('show run')
+try:
+    #Connect to device
+    device_connection = ConnectHandler(**device)
+    output = device_connection.send_command('show run')
 
-#Copy device output to file
-backup_file.write(output)
-backup_file.close()
+    #Copy device output to file
+    backup_file.write(output)
+    backup_file.close()
+except (AuthenticationException):
+    print('The username and/or password is incorrect for device ' + device['ip'])
+except (NetMikoTimeoutException):
+    print('The connection has timed out for device ' + device['ip'])
+except (SSHException):
+    print('The SSH connection could not be established for ' + device['ip'])
